@@ -26,44 +26,44 @@ By adding `mdu.DefaultModel` in model will include following attributes are adde
 
 Example Model:
 ```go
-type book struct {
+type product struct {
 	mdu.DefaultModel `bson:",inline"`
 	Name             string `json:"name" bson:"name"`
-	Pages            int    `json:"pages" bson:"pages"`
+	Price            int    `json:"price" bson:"price"`
 }
 ```
 
 ## Create
 
 ```go
-testBook := &book{
+testProduct := &product{
     Name:  "Test Create",
     Pages: 1,
 }
-booksColl := mdu.Coll(testBook)
-id, err := booksColl.Create(mdu.Ctx(), testBook)
+productsColl := mdu.Coll(testProduct)
+id, err := productsColl.Create(mdu.Ctx(), testProduct)
 ```
 
 ## Update
 
 ```go
-testBook.Name = "Test Update"
-booksColl := mdu.Coll(testBook)
-err := booksColl.Update(mdu.Ctx(), testBook)
+testProduct.Name = "Test Update"
+productsColl := mdu.Coll(testProduct)
+err := productsColl.Update(mdu.Ctx(), testProduct)
 ```
 
 ## Select
 
 ```go
-booksColl := mdu.Coll(testBook)
-err := booksColl.FindByID(mdu.Ctx(), id, testBook)
+productsColl := mdu.Coll(testProduct)
+err := productsColl.FindByID(mdu.Ctx(), id, testProduct)
 ```
 
 ## Delete
 
 ```go
-booksColl := mdu.Coll(testBook)
-err = booksColl.Delete(mdu.Ctx(), testBook)
+productsColl := mdu.Coll(testProduct)
+err = productsColl.Delete(mdu.Ctx(), testProduct)
 ```
 
 

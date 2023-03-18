@@ -73,4 +73,4 @@ err = booksColl.Delete(mdu.Ctx(), testBook)
 - `Create`: Create method inserts a new model into the database.
 - `Update`: Update function persists the changes made to a model to the database using the specified context.
 - `Delete`: Delete method deletes a model (doc) from a collection using the specified context.
-- `FindAll`: 
+- `FindAll`: FindAll finds, decodes and returns the results using the specified context.

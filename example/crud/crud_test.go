@@ -19,8 +19,10 @@ func TestMain(m *testing.M) {
 }
 
 func TestCreate(t *testing.T) {
+	resetCollection()
+
+	productsColl := mdu.Coll(&product{})
 	testProduct := newProduct("TestCreate", 124)
-	productsColl := mdu.Coll(testProduct)
 	id, err := productsColl.Create(mdu.Ctx(), testProduct)
 	util.PanicErr(err)
 
@@ -32,55 +34,47 @@ func TestCreate(t *testing.T) {
 	assert.NotNil(t, id)
 }
 
-func TestFindByIdWithValidId(t *testing.T) {
-	testProduct := newProduct("TestFind", 124)
-	productsColl := mdu.Coll(testProduct)
-	id, err := productsColl.Create(mdu.Ctx(), testProduct)
-	util.PanicErr(err)
+func TestFindById(t *testing.T) {
+	resetCollection()
 
-	err = productsColl.FindByID(mdu.Ctx(), id, testProduct)
+	productsColl := mdu.Coll(&product{})
+	testProduct := insertProduct(newProduct("TestFind", 121))
+
+	err := productsColl.FindByID(mdu.Ctx(), testProduct.ID, testProduct)
 	util.PanicErr(err)
 
 	assert.Equal(t, "TestFind", testProduct.Name)
 	assert.NotNil(t, testProduct.ID)
-	assert.NotNil(t, id)
 }
 
 func TestFindByIdWithInvalidId(t *testing.T) {
-	assert.NotNil(t, mdu.Coll(&product{}).FindByID(mdu.Ctx(), "invalid id", &product{}))
+	productsColl := mdu.Coll(&product{})
+	assert.NotNil(t, productsColl.FindByID(mdu.Ctx(), "invalid id", &product{}))
 }
 
 func TestUpdate(t *testing.T) {
-	testProduct := newProduct("TestCreate", 124)
-	productsColl := mdu.Coll(testProduct)
-	id, err := productsColl.Create(mdu.Ctx(), testProduct)
-	util.PanicErr(err)
-	assert.Equal(t, "TestCreate", testProduct.Name)
-
+	productsColl := mdu.Coll(&product{})
+	testProduct := insertProduct(newProduct("TestCreate", 122))
 	testProduct.Name = "TestUpdate"
-	err = productsColl.Update(mdu.Ctx(), testProduct)
+	err := productsColl.Update(mdu.Ctx(), testProduct)
 	util.PanicErr(err)
 	assert.Equal(t, "TestUpdate", testProduct.Name)
 
-	err = productsColl.FindByID(mdu.Ctx(), id, testProduct)
+	err = productsColl.FindByID(mdu.Ctx(), testProduct.ID, testProduct)
 	util.PanicErr(err)
 
 	assert.Equal(t, "TestUpdate", testProduct.Name)
 	assert.NotNil(t, testProduct.ID)
-	assert.NotNil(t, id)
 }
 
 func TestDelete(t *testing.T) {
-	testProduct := newProduct("TestDelete", 124)
-	productsColl := mdu.Coll(testProduct)
-	id, err := productsColl.Create(mdu.Ctx(), testProduct)
-	util.PanicErr(err)
-	assert.Equal(t, "TestDelete", testProduct.Name)
+	productsColl := mdu.Coll(&product{})
+	testProduct := insertProduct(newProduct("TestDelete", 124))
 
-	err = productsColl.Delete(mdu.Ctx(), testProduct)
+	err := productsColl.Delete(mdu.Ctx(), testProduct)
 	util.PanicErr(err)
 
-	err = productsColl.FindByID(mdu.Ctx(), id, testProduct)
+	err = productsColl.FindByID(mdu.Ctx(), testProduct.ID, testProduct)
 	assert.Equal(t, "mongo: no documents in result", err.Error())
 }
 
@@ -100,11 +94,17 @@ func TestFindAll(t *testing.T) {
 
 // -----------------
 // Helpers
-//-----------------
+// -----------------
+func insertProduct(testProduct *product) *product {
+	productsColl := mdu.Coll(&product{})
+	_, err := productsColl.Create(mdu.Ctx(), testProduct)
+	util.PanicErr(err)
+	return testProduct
+}
 
 func createProduct(name string, price int) interface{} {
 	testProduct := newProduct(name, price)
-	productsColl := mdu.Coll(testProduct)
+	productsColl := mdu.Coll(&product{})
 	id, err := productsColl.Create(mdu.Ctx(), testProduct)
 	util.PanicErr(err)
 	return id

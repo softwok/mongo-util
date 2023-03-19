@@ -1,7 +1,10 @@
 ## Introduction
 Wrapper and Util for MongoDB driver to perform CRUD operations.
 
-https://www.mongodb.com/docs/manual/reference/operator/
+[![CI](https://github.com/softwok/mongo-util/actions/workflows/go.yml/badge.svg)](https://github.com/softwok/mongo-util/actions/workflows/go.yml)
+
+
+**Mongo reference documentation:** https://www.mongodb.com/docs/manual/reference
 
 
 ## Initialization
@@ -16,7 +19,7 @@ if err != nil {
 ```
 
 ## MongoDB Collection Definition
-By adding `mdu.DefaultModel` in model will include following attributes are added and generated automatically:
+By adding `mdu.DefaultModel` in model will include following attributes and values are generated automatically:
 - Mongo Object ID: 
   - ```ID primitive.ObjectID `json:"id" bson:"_id,omitempty"```
 - Created Date: 
@@ -33,7 +36,7 @@ type product struct {
 }
 ```
 
-## Create
+## [Create](https://www.mongodb.com/docs/drivers/go/current/usage-examples/insertOne/)
 
 ```go
 testProduct := &product{
@@ -44,7 +47,7 @@ productsColl := mdu.Coll(testProduct)
 id, err := productsColl.Create(mdu.Ctx(), testProduct)
 ```
 
-## Update
+## [Update](https://www.mongodb.com/docs/drivers/go/current/usage-examples/updateOne/)
 
 ```go
 testProduct.Name = "Test Update"
@@ -52,20 +55,27 @@ productsColl := mdu.Coll(testProduct)
 err := productsColl.Update(mdu.Ctx(), testProduct)
 ```
 
-## Select
+## [Find](https://www.mongodb.com/docs/drivers/go/current/usage-examples/findOne/)
 
 ```go
 productsColl := mdu.Coll(&product{})
 err := productsColl.FindByID(mdu.Ctx(), id, testProduct)
 ```
 
-## Delete
+## [Delete](https://www.mongodb.com/docs/drivers/go/current/usage-examples/deleteOne/)
 
 ```go
 productsColl := mdu.Coll(&product{})
 err = productsColl.Delete(mdu.Ctx(), testProduct)
 ```
 
+## [FindAll](https://www.mongodb.com/docs/drivers/go/current/usage-examples/find/)
+
+```go
+productsColl := mdu.Coll(&product{})
+var results []product
+err := productsColl.FindAll(mdu.Ctx(), &results, bson.D{})
+```
 
 ## APIs
 - `FindByID`: FindByID method finds a doc and decodes it to a model, otherwise returns an error.

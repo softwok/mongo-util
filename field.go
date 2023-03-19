@@ -1,10 +1,11 @@
 package mdu
 
 import (
-"context"
-"go.mongodb.org/mongo-driver/bson/primitive"
-"time"
+	"context"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"time"
 )
+
 type IDField struct {
 	ID primitive.ObjectID `json:"id" bson:"_id,omitempty"`
 }

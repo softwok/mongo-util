@@ -38,7 +38,7 @@ type product struct {
 ```go
 testProduct := &product{
     Name:  "Test Create",
-    Pages: 1,
+    Price: 100,
 }
 productsColl := mdu.Coll(testProduct)
 id, err := productsColl.Create(mdu.Ctx(), testProduct)
@@ -55,14 +55,14 @@ err := productsColl.Update(mdu.Ctx(), testProduct)
 ## Select
 
 ```go
-productsColl := mdu.Coll(testProduct)
+productsColl := mdu.Coll(&product{})
 err := productsColl.FindByID(mdu.Ctx(), id, testProduct)
 ```
 
 ## Delete
 
 ```go
-productsColl := mdu.Coll(testProduct)
+productsColl := mdu.Coll(&product{})
 err = productsColl.Delete(mdu.Ctx(), testProduct)
 ```
 

@@ -1,6 +1,8 @@
 package mdu
 
-import "context"
+import (
+	"context"
+)
 
 // CollectionGetter interface contains a method to return
 // a model's custom collection.

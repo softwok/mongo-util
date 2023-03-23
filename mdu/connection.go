@@ -15,7 +15,7 @@ var config *Config
 var client *mongo.Client
 var db *mongo.Database
 
-// Config struct contains extra configuration properties for the mgm package.
+// Config struct contains extra configuration properties for the mdu package.
 type Config struct {
 	// Set to 10 second (10*time.Second) for example.
 	CtxTimeout time.Duration
@@ -24,7 +24,6 @@ type Config struct {
 // NewCtx function creates and returns a new context with the specified timeout.
 func NewCtx(timeout time.Duration) context.Context {
 	ctx, _ := context.WithTimeout(context.Background(), timeout)
-
 	return ctx
 }
 

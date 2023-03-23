@@ -48,6 +48,21 @@ func update(ctx context.Context, c *Collection, model Model, opts ...*options.Up
 	return afterUpdateHooks(ctx, res, model)
 }
 
+func patch(ctx context.Context, c *Collection, model Model, fields map[string]interface{}, opts ...*options.UpdateOptions) error {
+	// Call to saving hook
+	if err := beforeUpdateHooks(ctx, model); err != nil {
+		return err
+	}
+
+	res, err := c.UpdateOne(ctx, bson.M{field.ID: model.GetID()}, bson.M{"$set": fields}, opts...)
+
+	if err != nil {
+		return err
+	}
+
+	return afterUpdateHooks(ctx, res, model)
+}
+
 func deleteByID(ctx context.Context, c *Collection, model Model) error {
 	if err := beforeDeleteHooks(ctx, model); err != nil {
 		return err

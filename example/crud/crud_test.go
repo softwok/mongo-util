@@ -1,6 +1,7 @@
 package crud
 
 import (
+	"github.com/google/uuid"
 	"github.com/softwok/mongo-util/internal/util"
 	mdu2 "github.com/softwok/mongo-util/mdu"
 	"github.com/stretchr/testify/assert"
@@ -16,6 +17,24 @@ func TestMain(m *testing.M) {
 	code := m.Run()
 	shutdown()
 	os.Exit(code)
+}
+
+func TestCreateWithID(t *testing.T) {
+	resetCollection()
+
+	uuidGenerated := uuid.NewString()
+	productsColl := mdu2.Coll(&product{})
+	testProduct := newProduct("TestCreate", 124)
+	testProduct.SetID(uuidGenerated)
+	id, err := productsColl.Create(testProduct)
+	util.PanicErr(err)
+
+	err = productsColl.FindByID(id, testProduct)
+	util.PanicErr(err)
+
+	assert.Equal(t, uuidGenerated, testProduct.ID)
+	assert.Equal(t, "TestCreate", testProduct.Name)
+	assert.NotNil(t, id)
 }
 
 func TestCreate(t *testing.T) {
@@ -138,7 +157,7 @@ func newProduct(name string, price int) *product {
 }
 
 func shutdown() {
-	//resetCollection()
+	resetCollection()
 	mdu2.Disconnect()
 	mdu2.ResetDefaultConfig()
 }

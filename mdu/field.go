@@ -2,12 +2,12 @@ package mdu
 
 import (
 	"context"
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"github.com/google/uuid"
 	"time"
 )
 
 type IDField struct {
-	ID primitive.ObjectID `json:"id" bson:"_id,omitempty"`
+	ID string `json:"id" bson:"_id,omitempty"`
 }
 
 // DateFields struct contains the `created_at` and `updated_at`
@@ -18,26 +18,22 @@ type DateFields struct {
 }
 
 // PrepareID method prepares the ID value to be used for filtering
-// e.g.convert hex-string ID value to bson.ObjectId
-func (f *IDField) PrepareID(id interface{}) (interface{}, error) {
-	if id == nil {
-		if idStr, ok := id.(string); ok {
-			return primitive.ObjectIDFromHex(idStr)
-		}
+// generates uuid if not given id is empty
+func (f *IDField) PrepareID(id string) (string, error) {
+	if id != "" {
+		return id, nil
 	}
-
-	// Otherwise id must be ObjectId
-	return id, nil
+	return uuid.NewString(), nil
 }
 
 // GetID method returns a model's ID
-func (f *IDField) GetID() interface{} {
+func (f *IDField) GetID() string {
 	return f.ID
 }
 
 // SetID sets the value of a model's ID field.
-func (f *IDField) SetID(id interface{}) {
-	f.ID = id.(primitive.ObjectID)
+func (f *IDField) SetID(id string) {
+	f.ID = id
 }
 
 //--------------------------------

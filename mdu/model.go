@@ -24,10 +24,10 @@ type CollectionNameGetter interface {
 type Model interface {
 	// PrepareID converts the id value if needed, then
 	// returns it (e.g.convert string to objectId).
-	PrepareID(id interface{}) (interface{}, error)
+	PrepareID(id string) (string, error)
 
-	GetID() interface{}
-	SetID(id interface{})
+	GetID() string
+	SetID(id string)
 }
 
 // DefaultModel struct contains a model's default fields.

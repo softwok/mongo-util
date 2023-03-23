@@ -20,7 +20,7 @@ func create(ctx context.Context, c *Collection, model Model, opts ...*options.In
 	}
 
 	// Set new id
-	model.SetID(res.InsertedID)
+	model.SetID(res.InsertedID.(string))
 
 	err = afterCreateHooks(ctx, model)
 	if err != nil {

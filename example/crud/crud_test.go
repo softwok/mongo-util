@@ -3,7 +3,7 @@ package crud
 import (
 	"github.com/google/uuid"
 	"github.com/softwok/mongo-util/internal/util"
-	mdu2 "github.com/softwok/mongo-util/mdu"
+	"github.com/softwok/mongo-util/mdu"
 	"github.com/stretchr/testify/assert"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -23,7 +23,7 @@ func TestCreateWithID(t *testing.T) {
 	resetCollection()
 
 	uuidGenerated := uuid.NewString()
-	productsColl := mdu2.Coll(&product{})
+	productsColl := mdu.Coll(&product{})
 	testProduct := newProduct("TestCreate", 124)
 	testProduct.SetID(uuidGenerated)
 	id, err := productsColl.Create(testProduct)
@@ -40,7 +40,7 @@ func TestCreateWithID(t *testing.T) {
 func TestCreate(t *testing.T) {
 	resetCollection()
 
-	productsColl := mdu2.Coll(&product{})
+	productsColl := mdu.Coll(&product{})
 	testProduct := newProduct("TestCreate", 124)
 	id, err := productsColl.Create(testProduct)
 	util.PanicErr(err)
@@ -56,7 +56,7 @@ func TestCreate(t *testing.T) {
 func TestFindById(t *testing.T) {
 	resetCollection()
 
-	productsColl := mdu2.Coll(&product{})
+	productsColl := mdu.Coll(&product{})
 	testProduct := insertProduct(newProduct("TestFind", 121))
 
 	err := productsColl.FindByID(testProduct.ID, testProduct)
@@ -67,12 +67,12 @@ func TestFindById(t *testing.T) {
 }
 
 func TestFindByIdWithInvalidId(t *testing.T) {
-	productsColl := mdu2.Coll(&product{})
+	productsColl := mdu.Coll(&product{})
 	assert.NotNil(t, productsColl.FindByID("invalid id", &product{}))
 }
 
 func TestUpdate(t *testing.T) {
-	productsColl := mdu2.Coll(&product{})
+	productsColl := mdu.Coll(&product{})
 	testProduct := insertProduct(newProduct("TestCreate", 122))
 	testProduct.Name = "TestUpdate"
 	err := productsColl.Update(testProduct)
@@ -87,7 +87,7 @@ func TestUpdate(t *testing.T) {
 }
 
 func TestPatch(t *testing.T) {
-	productsColl := mdu2.Coll(&product{})
+	productsColl := mdu.Coll(&product{})
 	testProduct := insertProduct(newProduct("TestCreate", 122))
 	fields := map[string]interface{}{"name": "TestPatch"}
 	err := productsColl.Patch(testProduct, fields)
@@ -101,7 +101,7 @@ func TestPatch(t *testing.T) {
 }
 
 func TestDelete(t *testing.T) {
-	productsColl := mdu2.Coll(&product{})
+	productsColl := mdu.Coll(&product{})
 	testProduct := insertProduct(newProduct("TestDelete", 124))
 
 	err := productsColl.Delete(testProduct)
@@ -120,7 +120,7 @@ func TestFindAll(t *testing.T) {
 	_ = createProduct("Product5", 500)
 
 	var results []product
-	err := mdu2.Coll(&product{}).FindAll(&results, bson.D{})
+	err := mdu.Coll(&product{}).FindAll(&results, bson.D{})
 	util.PanicErr(err)
 	assert.Equal(t, 5, len(results))
 }
@@ -129,7 +129,7 @@ func TestFindAll(t *testing.T) {
 // Helpers
 // -----------------
 func insertProduct(testProduct *product) *product {
-	productsColl := mdu2.Coll(&product{})
+	productsColl := mdu.Coll(&product{})
 	_, err := productsColl.Create(testProduct)
 	util.PanicErr(err)
 	return testProduct
@@ -137,16 +137,16 @@ func insertProduct(testProduct *product) *product {
 
 func createProduct(name string, price int) interface{} {
 	testProduct := newProduct(name, price)
-	productsColl := mdu2.Coll(&product{})
+	productsColl := mdu.Coll(&product{})
 	id, err := productsColl.Create(testProduct)
 	util.PanicErr(err)
 	return id
 }
 
 type product struct {
-	mdu2.DefaultModel `bson:",inline"`
-	Name              string `json:"name" bson:"name"`
-	Price             int    `json:"price" bson:"price"`
+	mdu.DefaultModel `bson:",inline"`
+	Name             string `json:"name" bson:"name"`
+	Price            int    `json:"price" bson:"price"`
 }
 
 func newProduct(name string, price int) *product {
@@ -158,13 +158,13 @@ func newProduct(name string, price int) *product {
 
 func shutdown() {
 	resetCollection()
-	mdu2.Disconnect()
-	mdu2.ResetDefaultConfig()
+	mdu.Disconnect()
+	mdu.ResetDefaultConfig()
 }
 
 func setup() {
-	err := mdu2.Init(
-		&mdu2.Config{CtxTimeout: 5 * time.Second},
+	err := mdu.Init(
+		&mdu.Config{CtxTimeout: 5 * time.Second},
 		"mango_test_db",
 		options.Client().ApplyURI("mongodb://localhost:27017"))
 	if err != nil {
@@ -174,7 +174,7 @@ func setup() {
 }
 
 func resetCollection() {
-	_, err := mdu2.Coll(&product{}).DeleteMany(mdu2.Ctx(), bson.M{})
+	_, err := mdu.Coll(&product{}).DeleteMany(mdu.Ctx(), bson.M{})
 
 	util.PanicErr(err)
 }

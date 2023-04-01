@@ -70,7 +70,7 @@ func ResetDefaultConfig() {
 }
 
 // Init initializes the client and database using the specified configuration values, or default.
-func Init(conf *Config, dbName string, opts ...*options.ClientOptions) (err error) {
+func Init(conf *Config, dbName string, opts ...*options.ClientOptions) (client *mongo.Client, err error) {
 
 	// Use the predefined configuration values as default if the user
 	// does not provide any.
@@ -79,14 +79,14 @@ func Init(conf *Config, dbName string, opts ...*options.ClientOptions) (err erro
 	}
 	config = conf
 	if client, err = NewClient(opts...); err != nil {
-		return nil
+		return nil, err
 	}
 
 	db = client.Database(dbName)
 
 	fmt.Println("database connected.")
 
-	return nil
+	return client, nil
 }
 
 func Disconnect() {

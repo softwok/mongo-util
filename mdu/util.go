@@ -28,7 +28,7 @@ func CollName(m Model) string {
 
 	name := reflect.TypeOf(m).Elem().Name()
 
-	return inflection.Plural(util.ToSnakeCase(name))
+	return inflection.Plural(util.ToLowerCamelCase(name))
 }
 
 // UpsertTrueOption returns new instance of UpdateOptions with the upsert property set to true.

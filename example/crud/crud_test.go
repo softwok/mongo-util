@@ -19,6 +19,24 @@ func TestMain(m *testing.M) {
 	os.Exit(code)
 }
 
+func TestToLowerCamelCaseCollection(t *testing.T) {
+	resetCollection()
+
+	uuidGenerated := uuid.NewString()
+	productsColl := mdu.Coll(&product{})
+	testProduct := newProduct("TestCreate", 124)
+	testProduct.SetID(uuidGenerated)
+	id, err := productsColl.Create(testProduct)
+	util.PanicErr(err)
+
+	err = productsColl.FindByID(id, testProduct)
+	util.PanicErr(err)
+
+	assert.Equal(t, uuidGenerated, testProduct.ID)
+	assert.Equal(t, "TestCreate", testProduct.Name)
+	assert.NotNil(t, id)
+}
+
 func TestCreateWithID(t *testing.T) {
 	resetCollection()
 
@@ -147,6 +165,18 @@ type product struct {
 	mdu.DefaultModel `bson:",inline"`
 	Name             string `json:"name" bson:"name"`
 	Price            int    `json:"price" bson:"price"`
+}
+
+type PurchaseOrder struct {
+	mdu.DefaultModel `bson:",inline"`
+}
+
+type purchaseOrder struct {
+	mdu.DefaultModel `bson:",inline"`
+}
+
+type purchase_Order struct {
+	mdu.DefaultModel `bson:",inline"`
 }
 
 func newProduct(name string, price int) *product {

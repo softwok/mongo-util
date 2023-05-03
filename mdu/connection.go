@@ -89,6 +89,9 @@ func Init(conf *Config, dbName string, opts ...*options.ClientOptions) (err erro
 }
 
 func Disconnect() {
+	if client == nil {
+		return
+	}
 	err := client.Disconnect(Ctx())
 	if err != nil {
 		fmt.Println("failed to disconnect from database.")

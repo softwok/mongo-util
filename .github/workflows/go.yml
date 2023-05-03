@@ -5,8 +5,26 @@ on:
     branches: [ "main" ]
 
 jobs:
-  trigger_ci:
-    uses: softwok/github-actions/.github/workflows/go-pkg-ci.yml@main
-    with:
-      service-name: common-util
-    secrets: inherit
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.19
+
+      - name: Build
+        run: go build -v ./...
+        env:
+          GOCACHE: '/root/go/buildcache'
+          GOMODCACHE: '/root/go/modcache'
+          CGO_ENABLED: 0
+          GOOS: linux
+
+      - name: Test
+        run: go test -v ./...
+        env:
+          GOCACHE: '/root/go/buildcache'
+          GOMODCACHE: '/root/go/modcache'

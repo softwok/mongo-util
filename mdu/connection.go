@@ -49,7 +49,7 @@ func NewClient(opts ...*options.ClientOptions) (*mongo.Client, error) {
 	err = client.Ping(ctx, readpref.Primary())
 
 	if err != nil {
-		fmt.Println(err)
+		return nil, err
 	}
 
 	return client, nil

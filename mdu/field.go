@@ -40,6 +40,16 @@ func (f *IDField) SetID(id string) {
 	f.ID = id
 }
 
+// GetTenantId method returns a model's TenantId
+func (f *TenantIdField) GetTenantId() string {
+	return f.TenantId
+}
+
+// SetTenantId sets the value of a model's TenantId field.
+func (f *TenantIdField) SetTenantId(tenantId string) {
+	f.TenantId = tenantId
+}
+
 //--------------------------------
 // DateField methods
 //--------------------------------

@@ -17,6 +17,10 @@ type DateFields struct {
 	UpdatedAt time.Time `json:"updated_at" bson:"updated_at"`
 }
 
+type TenantIdField struct {
+	TenantId string `json:"tenantId" bson:"tenantId,omitempty"`
+}
+
 // PrepareID method prepares the ID value to be used for filtering
 // generates uuid if not given id is empty
 func (f *IDField) PrepareID(id string) (string, error) {

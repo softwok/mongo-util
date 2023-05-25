@@ -36,6 +36,13 @@ type DefaultModel struct {
 	DateFields `bson:",inline"`
 }
 
+// DefaultTenantModel struct contains a model's default fields. This is useful for multi tenant systems.
+type DefaultTenantModel struct {
+	IDField       `bson:",inline"`
+	DateFields    `bson:",inline"`
+	TenantIdField `bson:",inline"`
+}
+
 // Creating function calls the inner fields' defined hooks
 func (model *DefaultModel) Creating(ctx context.Context) error {
 	return model.DateFields.Creating(ctx)
